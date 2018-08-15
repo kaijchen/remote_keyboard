@@ -16,9 +16,6 @@
 #define KBD_PRODUCT 0xbeef
 #define KBD_NAME "remote keyboard"
 
-#define perr(msg) \
-	fprintf(stderr, "%s: %s\n", msg, strerror(errno));
-
 int main(void)
 {
 	struct input_event ie;
@@ -26,18 +23,18 @@ int main(void)
 	int fd;
        
 	if ((fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK)) < 0) {
-		perr("Failed to open /dev/uinput");
+		perror("Failed to open /dev/uinput");
 		exit(EXIT_FAILURE);
 	}
 
 	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0) {
-		perr("Failed to set EV_BIT");
+		perror("Failed to set EV_BIT");
 		exit(EXIT_FAILURE);
 	}
 
 	for (int keycode = 0; keycode < 256; keycode++) {
 		if (ioctl(fd, UI_SET_KEYBIT, keycode) < 0) {
-			perr("Failed to set KEY_BIT");
+			perror("Failed to set KEY_BIT");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -63,7 +60,7 @@ int main(void)
 	snprintf(uud.name, UINPUT_MAX_NAME_SIZE, KBD_NAME);
 
 	if (write(fd, &uud, sizeof(uud)) < 0) {
-		perr("Failed to setup device");
+		perror("Failed to setup device");
 		exit(EXIT_FAILURE);
 	}
 #else
@@ -76,13 +73,13 @@ int main(void)
 	snprintf(usetup.name, UINPUT_MAX_NAME_SIZE, KBD_NAME);
 
 	if (ioctl(fd, UI_DEV_SETUP, &usetup) < 0) {
-		perr("Failed to setup device");
+		perror("Failed to setup device");
 		exit(EXIT_FAILURE);
 	}
 #endif
 
 	if (ioctl(fd, UI_DEV_CREATE) < 0) {
-		perr("Failed to create device");
+		perror("Failed to create device");
 		exit(EXIT_FAILURE);
 	}
 
@@ -93,12 +90,12 @@ int main(void)
 	}
 
 	if (ioctl(fd, UI_DEV_DESTROY) < 0) {
-		perr("Failed to destroy device");
+		perror("Failed to destroy device");
 		exit(EXIT_FAILURE);
 	}
 
 	if (close(fd) < 0) {
-		perr("Failed to close fd");
+		perror("Failed to close fd");
 		exit(EXIT_FAILURE);
 	}
 

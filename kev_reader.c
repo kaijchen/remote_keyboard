@@ -10,9 +10,6 @@
 
 #include <linux/uinput.h>
 
-#define perr(msg) \
-	fprintf(stderr, "%s: %s\n", msg, strerror(errno));
-
 int main(int argc, char *argv[])
 {
 	int fd;
@@ -26,7 +23,7 @@ int main(int argc, char *argv[])
 	system("/bin/stty -echo");
 
 	if ((fd = open(argv[1], O_RDONLY)) < 0) {
-		perr("Failed to open device");
+		perror("Failed to open device");
 		exit(EXIT_FAILURE);
 	}
 
