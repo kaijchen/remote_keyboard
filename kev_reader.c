@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <linux/uinput.h>
+#include <linux/input.h>
 
 int main(int argc, char *argv[])
 {
